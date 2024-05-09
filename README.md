@@ -22,7 +22,7 @@ To run the script, execute it in a terminal. You can either choose an action fro
 5. **Create SSL Certificate**: Creates an SSL certificate for a specified server.
 6. **Deploy SSL Certificate to Server**: Deploys an SSL certificate to a specified server.
 7. **Copy Public Key to Remote Host for Passwordless Access**: Copies the public key to a remote host for passwordless access.
-8. **Create CA Certificate and Intermediate Certificate: Generates a new CA certificate and intermediate certificate.
+8. **Create CA Certificate and Intermediate Certificate**: Generates a new CA certificate and intermediate certificate.
 
 ## Dependencies
 - OpenSSL
