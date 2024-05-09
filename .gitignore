@@ -1,0 +1,7 @@
+CA
+*.crt
+*.key
+*.pem
+*.xdb
+certs/junk
+.vscode*
