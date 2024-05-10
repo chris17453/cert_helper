@@ -11,7 +11,24 @@ This script manages SSL certificates and Certificate Authorities (CAs). It provi
 To run the script, execute it in a terminal. You can either choose an action from the menu displayed or provide the choice as a command line argument.
 
 ```bash
-./ssl_setup.sh [choice]
+./cert.sh [choice]
+
+# OR 
+
+[nd@nd-box-watkinslabs-com CA]$ ./cert.sh 
+SSL Certificate Management Menu:
+1. List Certificate Authorities
+2. Deploy CA to Remote Server
+3. Install CA on Remote Server
+4. Install CA locally/Update CA Trust
+5. Create SSL Certificate
+6. Deploy SSL Certificate to Server
+7. Copy Public key to Remote Server
+8. Create CA and Intermediate CA
+9. Create and deploy a java keystore for existing certificate
+Enter choice: 
+
+
 ```
 
 ## Options
