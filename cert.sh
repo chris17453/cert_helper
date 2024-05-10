@@ -164,6 +164,36 @@ copy_public_key() {
     echo "Public key has been copied to the remote host for passwordless access."
 }
 
+create_keystore() {
+  read -p "Enter remote host: " REMOTE_HOST
+  read -p "Enter server IP or DNS sub domain: " SERVER_NAME
+  SERVER_NAME="$SERVER_NAME.$DOMAIN"
+  CERT_DIR="./certs/${SERVER_NAME}"
+  read -p "Enter KeyStore filename [default: server.jks]: " KEYSTORE_FILENAME
+  KEYSTORE_FILENAME="${KEYSTORE_FILENAME:-server.jks}"
+  read -p "Enter KeyStore password: " KEYSTORE_PASSWORD
+
+  # Create PKCS12 KeyStore to temporarily hold both cert and private key
+  openssl pkcs12 -export -out "${CERT_DIR}/${SERVER_NAME}.p12" \
+                      -inkey "${CERT_DIR}/${SERVER_NAME}.key" \
+                      -in "${CERT_DIR}/${SERVER_NAME}.crt" \
+                      -certfile "$CA_BUNDLE" \
+                      -name "$SERVER_NAME" -password "pass:$KEYSTORE_PASSWORD"
+
+  # Convert PKCS12 to JKS 
+  keytool -importkeystore -destkeystore "${CERT_DIR}/$KEYSTORE_FILENAME" \
+          -deststorepass "$KEYSTORE_PASSWORD" \
+          -srckeystore "${CERT_DIR}/${SERVER_NAME}.p12" \
+          -srcstorepass "$KEYSTORE_PASSWORD" \
+          -srcstoretype PKCS12 -alias "$SERVER_NAME" 
+
+  
+  # Deploy the KeyStore
+  scp "${CERT_DIR}/$KEYSTORE_FILENAME" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_SSL_DIR"
+  echo "Java KeyStore ($KEYSTORE_FILENAME) created and deployed to the server."
+}
+
+
 # Main function
 main() {
     if [[ -z "$1" ]]; then
@@ -176,6 +206,7 @@ main() {
        echo "6. Deploy SSL Certificate to Server"
        echo "7. Copy Public key to Remote Server"
        echo "8. Create CA and Intermediate CA"
+       echo "9. Create and deploy a java keystore for existing certificate"
        read -p "Enter choice: " choice
     else
         choice=$1
@@ -191,8 +222,9 @@ main() {
         6) deploy_ssl_cert ;;
         7) copy_public_key ;;
         8) create_ca_cert ;;
+        9) create_keystore ;;
         *) 
-            echo "Invalid choice. Exiting."s
+            echo "Invalid choice. Exiting."
             exit 1 ;;
 
     esac

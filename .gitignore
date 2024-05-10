@@ -3,5 +3,7 @@ CA
 *.key
 *.pem
 *.xdb
+*.jks
+*.p12
 certs/junk
 .vscode*
